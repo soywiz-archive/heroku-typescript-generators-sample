@@ -1,0 +1,17 @@
+﻿{% extends "base.html" %}
+
+{% block body %}
+    <h1>Entry list</h1>
+    <ul>
+    {% for item in items %}
+        <li>{{ item }}</li>
+    {% endfor %}
+    </ul>
+
+    time: {{ time }}
+
+    <form action="/test" method="post" enctype="application/x-www-form-urlencoded">
+        <input type="text" name="type" value="" />
+        <input type="submit" value="send" />
+    </form>
+{% endblock %}
