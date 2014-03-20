@@ -146,8 +146,8 @@ declare module __Q {
     export function isPromiseAlike(object: any): boolean;
     export function isPending(object: any): boolean;
 
-    //export function async<T>(generatorFunction: any): (...args: any[]) => Promise<T>;
-    export function async<T>(generatorFunction: T): T;
+    export function async<T>(generatorFunction: any): (...args: any[]) => Promise<T>;
+    //export function async<T>(generatorFunction: T): T;
     export function spawn<T>(generatorFunction: any):void;
     export function nextTick(callback: Function): void;
 
