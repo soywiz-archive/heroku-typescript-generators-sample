@@ -8,7 +8,8 @@ function handleFolder(folder) {
             return;
         if (fileName.match(/\.js$/)) {
             var data = (fs.readFileSync(fullPath, 'utf-8'));
-            var datamod = data.replace(/Q.spawn\s*\(\s*function\s*\(/g, 'Q.spawn(function*(');
+            var datamod = data;
+            datamod = datamod.replace(/Q\.(async|spawn)\s*\(\s*function\s*\(/g, 'Q.$1(function*(');
             if (data != datamod) {
                 fs.writeFileSync(fullPath, datamod, 'utf-8');
                 console.log('Fixed generators in "' + fullPath + '"');

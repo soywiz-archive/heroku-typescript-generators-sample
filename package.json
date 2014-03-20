@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node --harmony bootstrap.js",
-	"test": "node_modules/.bin/mocha --harmony --ui exports -R spec -r updateasync --globals name "
+	"test": "node_modules\\.bin\\mocha --harmony --ui exports -R spec -r updateasync --globals name "
   },
   "dependencies": {
 	"underscore": "^1.6.0",

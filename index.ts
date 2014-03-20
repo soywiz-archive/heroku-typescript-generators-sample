@@ -28,36 +28,32 @@ var app = connect()
     .use(connect.query())
     .use(connect.urlencoded())
     .use(urlrouter((app) => {
-        app.get('/', (req, res) => {
+        app.get('/', Q.async((req, res) => {
             res.writeHead(307, { 'Location': '/test' });
             res.end();
-        });
-        app.post('/test', (req, res) => {
-            Q.spawn(() => {
-                try {
-                    var body = req['body'];
-                    yield(db.dbAsync.collection('testcollection').insertAsync({ 'type': body.type }));
-                    res.writeHead(200, { 'Content-Type': 'text/html' });
-                    res.end('<script type="text/javascript">document.location = "/test?redirected";</script>');
-                } catch (e) {
-                    res.writeHead(404, { 'Content-Type': 'text/plain' });
-                    res.end('error: ' + e);
-                }
-            });
-        });
-        app.get('/test', (req, res) => {
-            Q.spawn(() => {
-                try {
-                    var timer = new Timer();
-                    var items = yield(db.dbAsync.collection('testcollection').find().sort({ type: +1 }).toArrayAsync());
-                    res.writeHead(200, { 'Content-Type': 'text/html' });
-                    res.end(yield(atplAsync('list.html', { items: items, time: timer.elapsed })));
-                } catch (e) {
-                    res.writeHead(404, { 'Content-Type': 'text/plain' });
-                    res.end('error: ' + e);
-                }
-            });
-        });
+        }));
+        app.post('/test', Q.async((req, res) => {
+            try {
+                var body = req['body'];
+                yield(db.dbAsync.collection('testcollection').insertAsync({ 'type': body.type }));
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.end('<script type="text/javascript">document.location = "/test?redirected";</script>');
+            } catch (e) {
+                res.writeHead(404, { 'Content-Type': 'text/plain' });
+                res.end('error: ' + e);
+            }
+        }));
+        app.get('/test', Q.async((req, res) => {
+            try {
+                var timer = new Timer();
+                var items = yield(db.dbAsync.collection('testcollection').find().sort({ type: +1 }).toArrayAsync());
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.end(yield(atplAsync('list.html', { items: items, time: timer.elapsed })));
+            } catch (e) {
+                res.writeHead(404, { 'Content-Type': 'text/plain' });
+                res.end('error: ' + e);
+            }
+        }));
     }))
     .use(connect.static('public'))
 ;
@@ -129,9 +125,11 @@ class Timer {
     }
 }
 
-Q.spawn(() => {
+export var mainAsync = Q.async(() => {
     yield(db.connectAsync('troup.mongohq.com', 10014, 'soywiz_test', 'testtest', 'testtest'));
 
     server.listen(port);
     console.log('listening to: ' + port);
 });
+
+mainAsync();
